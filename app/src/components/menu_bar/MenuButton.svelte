@@ -10,18 +10,8 @@
     }
 </script>
 
-<button on:click={jumpToPage}>
+<button 
+    on:click={jumpToPage} 
+    class="w-[20vw] h-4/5 border border-white text-white bg-transparent rounded-3xl p-2.5">
     {buttonText}
 </button>
-
-<style>
-    button {
-        width: 20vw;
-        height: 80%;
-        border-color: aliceblue;
-        color: #ffff;
-        background-color: transparent;
-        border-radius: 20px;
-        padding: 10px;
-    }
-</style>

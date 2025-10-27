@@ -1,4 +1,5 @@
 export interface ButtonProps {
     id: string,
-    buttonText: string
+    buttonText: string,
+    anchorID: string
 }

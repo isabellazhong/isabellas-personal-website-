@@ -1,9 +1,11 @@
 <script>
   import MenuBar from "../components/menu_bar/MenuBar.svelte";
+  import Home from "../components/home/Home.svelte";
 </script>
 
 <main>
   <MenuBar></MenuBar>
+  <Home></Home>
 </main>
 
 <style lang="postcss">
@@ -13,6 +15,7 @@
 
   main {
     display: flex;
-    justify-content: center;
+    position:relative;
+    flex-direction: column;
   }
 </style>
