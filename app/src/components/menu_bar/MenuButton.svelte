@@ -8,6 +8,7 @@
             targetElement.scrollIntoView({behavior: 'smooth'}); 
         }
     }
+
 </script>
 
 <button 

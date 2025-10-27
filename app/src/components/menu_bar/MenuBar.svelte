@@ -5,16 +5,16 @@
   
 
   const buttonElements: ButtonProps[] = [
-    { id: "aboutMeButton", buttonText: "About Me" },
-    { id: "projectsButton", buttonText: "Projects" },
-    { id: "experienceButton", buttonText: "Experience" },
-    { id: "contactMeButton", buttonText: "Contact Me" },
+    { target_id: "about_me", button_text: "About Me"},
+    { target_id: "projectsButton", button_text: "Projects"},
+    { target_id: "experienceButton", button_text: "Experience"},
+    { target_id: "contactMeButton", button_text: "Contact Me"},
   ];
 </script>
 
-<div
-  class="relative w-4/5 p-5 flex items-center justify-center gap-5 fixed top-0 left-1/2 transform -translate-x-1/2 z-10">
+<nav
+  class="fixed w-4/5 p-5 flex items-center justify-center gap-5 top-0 left-1/2 transform -translate-x-1/2 z-10">
   {#each buttonElements as button}
-    <MenuButton targetElementID={button.id} buttonText={button.buttonText}></MenuButton>
+    <MenuButton targetElementID={button.target_id} buttonText={button.button_text}></MenuButton>
   {/each}
-</div>
+</nav>

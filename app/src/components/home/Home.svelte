@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div class="home flex min-w-screen h-1/5 translate-y-1/2 gap-20 mt-10">
+<div class="relative home flex min-w-screen translate-y-1/2 gap-20 mt-50">
   <div class="relative left-half w-1/2  h-1/2 flex translate-x-1/4">
     <div class="intro-text text-white text-left">
       <p class="sm:text-3xl mb-2">hello, my name is</p>
