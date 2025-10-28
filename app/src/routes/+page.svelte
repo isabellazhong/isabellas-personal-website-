@@ -1,13 +1,13 @@
 <script lang="ts">
   import MenuBar from "../components/menu_bar/MenuBar.svelte";
   import Home from "../components/home/Home.svelte";
-  import AboutMe from "../components/about_me/AboutMe.svelte";
+  import AboutMe from "../components/about_me/text/AboutMe.svelte";
   import { fadeIn } from "$lib/actions/fadeIn.js";
 </script>
 
 <main class="snap-y snap-mandatory overflow-y-scroll h-screen overflow-x-clip">
   <MenuBar></MenuBar>
-  <section id="home_section" class="h-screen snap-start">
+  <section id="home_section" class="h-screen snap-start fade-in-section" use:fadeIn={{ threshold: 0.5, reset: true }}>
     <Home></Home>
   </section>
   <section
