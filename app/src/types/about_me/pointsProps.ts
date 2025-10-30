@@ -1,4 +1,4 @@
-export interface ActivityPointProps {
+export interface PointsProps {
     header: string,
     desc: string
 }

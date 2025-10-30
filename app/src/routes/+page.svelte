@@ -1,7 +1,7 @@
 <script lang="ts">
   import MenuBar from "../components/menu_bar/MenuBar.svelte";
   import Home from "../components/home/Home.svelte";
-  import AboutMe from "../components/about_me/text/AboutMe.svelte";
+  import AboutMe from "../components/about_me/AboutMe.svelte";
   import { fadeIn } from "$lib/actions/fadeIn.js";
 </script>
 
@@ -11,7 +11,7 @@
     <Home></Home>
   </section>
   <section
-    id="about_me"
+    id="about_me_section"
     class="snap-start h-screen fade-in-section translate-y-1/2"
     use:fadeIn={{ threshold: 0.5, reset: true }}
   >
