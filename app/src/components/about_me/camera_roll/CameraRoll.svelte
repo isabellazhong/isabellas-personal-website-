@@ -2,6 +2,16 @@
     import type { photoProps } from "../../../types/about_me/photoProps.js";
     import { onMount } from "svelte";
 
+    // hover params 
+    let hoveredIndex: number | null = null;
+    const shiftDistance:number = 50;
+
+    // rotation params 
+    let rotation: number = 0; 
+    let speed: number = 0;
+    const friction: number = 0.8; 
+    let frame: number; 
+
     const photos: photoProps[] = [
         {
             src: "/images/friends/climbing.jpg", 
@@ -55,12 +65,9 @@
         }
     ];
 
-    const data: number[] = Array(10).fill(10); 
-
     const outerRadius: number = 800; 
     const innerRadius: number = 500;
 
-    const total = data.reduce((a,b) => a + b); 
     let startAngle: number = 0;
 
     interface Slice extends photoProps {
@@ -106,43 +113,92 @@
         alert(`You clicked ${label}!`);
     }
 
+    function getSliceTransform(index: number, startAngle: number, endAngle: number) {
+        if (hoveredIndex === index ) {
+            const midAngle = (startAngle + endAngle) / 2;
+            const translateX = Math.cos(midAngle) * shiftDistance;
+            const translateY = Math.sin(midAngle) * shiftDistance;
+            return `translate(${translateX}, ${translateY})`;
+        }
+        return '';
+    }
+
+    function animate() {
+        rotation += speed; 
+        speed *= friction; 
+        frame = requestAnimationFrame(animate);
+    }
+
+    function handleMouseMove(e: MouseEvent) {
+        speed += e.movementX * 0.1; 
+    }
+
+    let svgEl: SVGSVGElement | null = null;
+    let groupEl: SVGGElement | null = null;
+
+    onMount(() => {
+        groupEl = svgEl?.querySelector("#wheel-group") as SVGGElement;
+
+        function render() {
+            if (groupEl) groupEl.style.transform = `rotate(${rotation}deg)`;
+            rotation += speed;
+            speed *= friction;
+            frame = requestAnimationFrame(render);
+        }
+
+        window.addEventListener("mousemove", handleMouseMove);
+        frame = requestAnimationFrame(render);
+
+        return () => {
+            cancelAnimationFrame(frame);
+            window.removeEventListener("mousemove", handleMouseMove);
+        };
+    });
+
 </script>
 
 <svg
-  viewBox={`-${outerRadius * 1.5} -${outerRadius * 1.5} ${outerRadius * 3} ${outerRadius * 3}`}
+  bind:this={svgEl}
+  viewBox={`-${outerRadius * 2} -${outerRadius * 1.5} ${outerRadius * 4} ${outerRadius * 3}`}
   width="100%"
   height="auto"
 >
-    <defs>
-    {#each slices as slice, i}
-        <pattern
-        id={`img${i}`}
-        patternUnits="userSpaceOnUse"
-        width={outerRadius * 2}
-        height={outerRadius * 2}
-        >
-        <image
-            href={slice.src}
-            x={-outerRadius}
-            y={-outerRadius}
-            width={outerRadius * 4}
-            height={outerRadius * 4}
-            preserveAspectRatio="xMidYMid slice"
-        />
-        </pattern>
-    {/each}
-    </defs>
-    {#each slices as slice, i}
-        <path
-        d={describeArc(slice.startAngle, slice.endAngle)}
-        fill={`url(#img${i})`}
-        stroke="black"
-        stroke-width="10"
-        role="button"
-        tabindex="0"
-        on:click={() => handleClick(slice.tag)}
-        on:keydown={(e) => e.key === 'Enter' && handleClick(slice.tag)}
-        style="cursor: pointer;"
-        />
-    {/each}
+    <g id="wheel-group">
+        <defs>
+            {#each slices as slice, i}
+            <pattern
+            id={`img${i}`}
+            patternUnits="userSpaceOnUse"
+            width={outerRadius }
+            height={outerRadius }
+            >
+            <image
+                href={slice.src}
+                x={-outerRadius}
+                y={-outerRadius}
+                width={outerRadius * 3}
+                height={outerRadius * 3}
+                preserveAspectRatio="xMidYMid slice"
+            />
+            </pattern>
+            {/each}
+        </defs>
+        {#each slices as slice, i}
+            <path
+            d={describeArc(slice.startAngle, slice.endAngle)}
+            fill={`url(#img${i})`}
+            stroke="black"
+            stroke-width="20"
+            role="button"
+            tabindex="0"
+            on:click={() => handleClick(slice.tag)}
+            on:keydown={(e) => e.key === 'Enter' && handleClick(slice.tag)}
+            on:mouseenter={() => hoveredIndex = i}
+            on:mouseleave={() => hoveredIndex = null}
+            transform={getSliceTransform(i, slice.startAngle, slice.endAngle)}
+            style="cursor: pointer; transition: transform 0.3s ease;"
+            />
+        {/each}
+    </g>
+   
 </svg>

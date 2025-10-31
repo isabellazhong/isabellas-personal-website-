@@ -17,6 +17,8 @@
   >
     <AboutMe></AboutMe>
   </section>
+  <section id="projects_section" >
+  </section>
 </main>
 
 <style lang="postcss">

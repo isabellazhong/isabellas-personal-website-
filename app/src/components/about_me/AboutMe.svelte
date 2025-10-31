@@ -23,8 +23,7 @@
     </div>
   </div>
   <div
-    class="relative h-1/2 w-screen justify-center align-middle -translate-y-50"
-  >
+    class="relative h-1/2 w-screen justify-center align-middle -translate-y-50 ">
     <CameraRoll></CameraRoll>
   </div>
 </div>
