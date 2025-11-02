@@ -123,12 +123,6 @@
         return '';
     }
 
-    function animate() {
-        rotation += speed; 
-        speed *= friction; 
-        frame = requestAnimationFrame(animate);
-    }
-
     function handleMouseMove(e: MouseEvent) {
         speed += e.movementX * 0.1; 
     }
@@ -179,6 +173,7 @@
                 width={outerRadius * 3}
                 height={outerRadius * 3}
                 preserveAspectRatio="xMidYMid slice"
+                transform={`rotate(${(slice.startAngle + slice.endAngle) / 2 * 180 / Math.PI + 90})`}
             />
             </pattern>
             {/each}
