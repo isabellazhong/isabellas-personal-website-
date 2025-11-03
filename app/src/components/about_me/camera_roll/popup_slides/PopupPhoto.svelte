@@ -4,7 +4,13 @@
     export let popUp: PopupPhotoProps; 
 </script>
 
-<div>
-    <img src={popUp.src} alt={popUp.desc} id={`photo-${popUp.src}`}>
+<div class="image">
+    <img src={popUp.src} alt={popUp.desc}>
     <p>{popUp.desc}</p>
 </div>
+
+<style>
+    .image {
+        width: 70%; 
+    }
+</style>

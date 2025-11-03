@@ -10,7 +10,7 @@
       </p>
     </div>
   </div>
-  <div class="dollhouse right-half w-1/2 translate-x-1/4">
+  <div class="doll right-half w-1/2 translate-x-1/4">
     <div class=" bg-gray-500 h-full w-1/2 "></div>
   </div>
 </div>
