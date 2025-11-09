@@ -14,6 +14,7 @@
   let speed: number = 0;
   const friction: number = 0.8;
   let frame: number;
+  let isMouseOverWheel: boolean = false;
 
   // popup params
   let isVisible: boolean = true;
@@ -97,20 +98,6 @@
 
   let startAngle: number = 0;
 
-  for (let i = 0; i < photos.length; i++) {
-    let current: PopupPhotoProps = photos[i];
-    if (i == 0) {
-      current.prev_photo = photos[-1];
-      current.next_photo = photos[i + 1];
-    } else if (i == photos.length - 1) {
-      current.next_photo = photos[0];
-      current.prev_photo = photos[i - 1];
-    } else {
-      current.prev_photo = photos[i - 1];
-      current.next_photo = photos[i + 1];
-    }
-  }
-
   interface Slice extends PopupPhotoProps {
     startAngle: number;
     endAngle: number;
@@ -176,7 +163,17 @@
   }
 
   function handleMouseMove(e: MouseEvent) {
-    speed += e.movementX * 0.1;
+    if (isMouseOverWheel) {
+      speed += e.movementX * 0.1;
+    }
+  }
+
+  function handleMouseEnter() {
+    isMouseOverWheel = true;
+  }
+
+  function handleMouseLeave() {
+    isMouseOverWheel = false;
   }
 
   let svgEl: SVGSVGElement | null = null;
@@ -192,12 +189,16 @@
       frame = requestAnimationFrame(render);
     }
 
-    window.addEventListener("mousemove", handleMouseMove);
+    if (svgEl) {
+      svgEl.addEventListener("mousemove", handleMouseMove);
+    }
     frame = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(frame);
-      window.removeEventListener("mousemove", handleMouseMove);
+      if (svgEl) {
+        svgEl.removeEventListener("mousemove", handleMouseMove);
+      }
     };
   });
 </script>
@@ -207,6 +208,10 @@
   viewBox={`-${outerRadius * 2} -${outerRadius * 1.5} ${outerRadius * 4} ${outerRadius * 3}`}
   width="100%"
   height="auto"
+  role="region"
+  aria-label="Camera roll wheel"
+  on:mouseenter={handleMouseEnter}
+  on:mouseleave={handleMouseLeave}
 >
   <g id="wheel-group">
     <defs>
@@ -249,5 +254,5 @@
 </svg>
 
 {#if isVisible && currentPhoto}
-    <PopupSlides current={currentPhoto} {isVisible} on:close={closePopup} />
+  <PopupSlides current={currentPhoto} {isVisible} on:close={closePopup} />
 {/if}

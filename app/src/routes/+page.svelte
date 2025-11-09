@@ -7,7 +7,11 @@
 
 <main class="snap-y snap-mandatory overflow-y-scroll h-screen overflow-x-clip">
   <MenuBar></MenuBar>
-  <section id="home_section" class="h-screen snap-start fade-in-section" use:fadeIn={{ threshold: 0.5, reset: true }}>
+  <section
+    id="home_section"
+    class="h-screen snap-start fade-in-section"
+    use:fadeIn={{ threshold: 0.5, reset: true }}
+  >
     <Home></Home>
   </section>
   <section
@@ -17,8 +21,7 @@
   >
     <AboutMe></AboutMe>
   </section>
-  <section id="projects_section" >
-  </section>
+  <section id="projects_section"></section>
 </main>
 
 <style lang="postcss">

@@ -1,6 +1,9 @@
+export type PhotoTag = "food" | "friends" | "art";
+
+
 export interface photoProps {
     src: string,
-    tag: "food" | "friends" | "art",
+    tag: PhotoTag,
     desc: string
 }
 
