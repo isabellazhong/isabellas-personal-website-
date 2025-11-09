@@ -202,7 +202,7 @@
 </script>
 
 <div
-  class="w-full h-screen bg-black flex items-center justify-center overflow-hidden"
+  class="w-full h-screen flex items-center justify-center "
 >
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
