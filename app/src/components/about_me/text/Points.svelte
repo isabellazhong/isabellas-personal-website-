@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PointsProps } from "../../../types/about_me/pointsProps.js";
   import type { PhotoTag } from "../../../types/about_me/photoProps.js";
-  let props: PointsProps;
+
   export let currentTag: PhotoTag | undefined = undefined;
   const points: PointsProps[] = [
     {

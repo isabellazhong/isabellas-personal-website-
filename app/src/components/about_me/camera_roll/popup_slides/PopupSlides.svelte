@@ -3,6 +3,7 @@
   import { fade, scale } from "svelte/transition";
   import type { PopupPhotoProps } from "../../../../types/about_me/photoProps.js";
   import PopupPhoto from "./PopupPhoto.svelte";
+  import { browser } from "$app/environment";
 
   export let current: PopupPhotoProps;
   export let isVisible: boolean;
@@ -34,10 +35,12 @@
   }
 
   onMount(() => {
+    if (!browser) return; 
     window.addEventListener("keydown", handleKeyDown);
   });
 
   onDestroy(() => {
+    if (!browser) return; 
     window.removeEventListener("keydown", handleKeyDown);
   });
 
