@@ -4,80 +4,7 @@
   import { browser } from "$app/environment";
   import AboutMeText from "../text/AboutMeText.svelte";
   import PopupSlides from "./popup_slides/PopupSlides.svelte";
-
-  let photos: PopupPhotoProps[] = [
-    {
-      src: "/images/friends/climbing.jpg",
-      tag: "friends",
-      desc: "First time rock climbing w/ friends!",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/friends/escape_room.jpg",
-      tag: "friends",
-      desc: "Winning an escape room because we're just like that (we used 2 hints)",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/friends/cottage.JPG",
-      tag: "friends",
-      desc: "Cottage retreat! Very fun :D",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/friends/karaoke.JPG",
-      tag: "friends",
-      desc: "Karaoke night for my birthday :)",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/friends/scaddabush.jpg",
-      tag: "friends",
-      desc: "Very rare hangout with my friends from church",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/food/macarons.jpg",
-      tag: "food",
-      desc: "Finally succeeded making macarons",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/food/mashed_potatoes.jpg",
-      tag: "food",
-      desc: "Somewhat fancier dinner during midterm season",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/food/resevoir_lounge.jpg",
-      tag: "food",
-      desc: "A really yummy and cool meal at the Resevoir Lounge",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/paintings/landscape_painting.jpg",
-      tag: "art",
-      desc: "Made during a painting and bubble tea night event at school!",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/paintings/fish_painting.JPG",
-      tag: "art",
-      desc: "Still hung up on my wall",
-      prev_photo: null,
-      next_photo: null,
-    },
-  ];
-
+  import photos from "../../../data/about_me/photos.js";
 
   // mouse movement vars
   let is_dragging = false;
@@ -97,6 +24,7 @@
   let animation_frame: number | null = null;
 
   let radius = 400;
+  let hoveredIndex: number | null = null;
 
   // Performance optimization: Cache calculations
   let totalImages = photos.length;
@@ -106,7 +34,7 @@
 
   // popup vars
   let visible = false;
-  let global_current_photo: PopupPhotoProps; 
+  let global_current_photo: PopupPhotoProps;
 
   // Optimized position update function
   function updateImagePositions() {
@@ -123,7 +51,10 @@
           opacity = Math.max(0, 1 - (y - fadeStart) / fadeEnd);
         }
 
-        const scale = 0.7 + 0.3 * opacity;
+        let scale = 0.7 + 0.3 * opacity;
+        if (hoveredIndex === index) {
+          scale *= 1.15;
+        }
         const tiltAngle = angle + 90;
         const zIndex = Math.floor(opacity * 100);
 
@@ -253,7 +184,11 @@
 
   function applyMomentum() {
     // Only run in browser environment
-    if (!browser || typeof requestAnimationFrame === "undefined" || typeof window === "undefined") {
+    if (
+      !browser ||
+      typeof requestAnimationFrame === "undefined" ||
+      typeof window === "undefined"
+    ) {
       return;
     }
 
@@ -312,15 +247,14 @@
   }
 
   function handlePopupMouseDown(current_photo: PopupPhotoProps) {
-      global_current_photo = current_photo;
-      visible = true; 
+    global_current_photo = current_photo;
+    visible = true;
   }
 
-  function handlePopupTouch (current_photo: PopupPhotoProps) {
-      global_current_photo = current_photo;
-      visible = true; 
+  function handlePopupTouch(current_photo: PopupPhotoProps) {
+    global_current_photo = current_photo;
+    visible = true;
   }
-
 
   function handleRingMouseMove(e: MouseEvent) {
     if (handleRingInteraction(e)) {
@@ -330,6 +264,16 @@
     }
 
     if (is_dragging) handleMouseMove(e);
+  }
+
+  function handlePhotoHover(index: number) {
+    hoveredIndex = index;
+    updateImagePositions();
+  }
+
+  function handlePhotoLeave() {
+    hoveredIndex = null;
+    updateImagePositions();
   }
 
   // Global event handlers for smooth dragging even when mouse leaves container
@@ -434,10 +378,14 @@
     style:cursor={is_dragging ? "grabbing" : "grab"}
   >
     {#each photos as photo, index}
-      <div bind:this={imageElements[index]} 
-      style={getImageStyle(index)}
-      on:mousedown={() => handlePopupMouseDown(photo)}
-      on:touchstart={() => handlePopupTouch(photo)}>
+      <div
+        bind:this={imageElements[index]}
+        style={getImageStyle(index)}
+        on:mousedown={() => handlePopupMouseDown(photo)}
+        on:touchstart={() => handlePopupTouch(photo)}
+        on:mouseenter={() => handlePhotoHover(index)}
+        on:mouseleave={handlePhotoLeave}
+      >
         <img
           src={photo.src}
           alt={`Photo ${index + 1}`}
@@ -449,5 +397,4 @@
   </div>
   <AboutMeText></AboutMeText>
 </div>
-
-<!-- <PopupSlides isVisible={visible} current={global_current_photo}></PopupSlides> -->
+<!-- <PopupSlides current={global_current_photo} isVisible={visible} on:close={() => handlePopupMouseDown} /> -->
