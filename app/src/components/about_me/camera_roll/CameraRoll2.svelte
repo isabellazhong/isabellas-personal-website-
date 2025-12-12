@@ -366,7 +366,7 @@
   }
 </script>
 
-<div class="w-full h-screen flex items-center justify-center">
+<div class="w-full h-screen flex items-center justify-center z-0">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     bind:this={container}
@@ -397,4 +397,5 @@
   </div>
   <AboutMeText></AboutMeText>
 </div>
-<!-- <PopupSlides current={global_current_photo} isVisible={visible} on:close={() => handlePopupMouseDown} /> -->
+
+<PopupSlides current={global_current_photo} isVisible={visible} on:close={() => handlePopupMouseDown} />

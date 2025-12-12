@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { createEventDispatcher, onMount, onDestroy } from "svelte";
-  import { fade, scale } from "svelte/transition";
+  import { onMount, onDestroy } from "svelte";
+  import {scale } from "svelte/transition";
   import type { PopupPhotoProps } from "../../../../types/about_me/photoProps.js";
   import PopupPhoto from "./PopupPhoto.svelte";
   import { browser } from "$app/environment";
@@ -8,18 +8,12 @@
   export let current: PopupPhotoProps;
   export let isVisible: boolean;
 
-  const dispatch = createEventDispatcher<{ close: void }>();
-
   function goForward() {
     if (current?.next_photo) current = current.next_photo;
   }
 
   function goBackward() {
     if (current?.prev_photo) current = current.prev_photo;
-  }
-
-  function close() {
-    dispatch("close");
   }
 
   function handleKeyDown(event: KeyboardEvent) {
@@ -64,52 +58,38 @@
 
 {#if isVisible}
   <div
-    class="absolute w-full h-full inset-0 z-50 flex items-center justify-center -top-1/2"
+    class="absolute w-screen flex items-center justify-center perspective-[900px] z-100000"
     on:touchstart={onTouchStart}
     on:touchend={onTouchEnd}
   >
-    <!-- Backdrop -->
-    <div
-      class="absolute inset-0 bg-black/70 backdrop-blur-[1px]"
-      on:click={close}
-      transition:fade
-    ></div>
+    <div class="opacity-25 z-300"></div>
 
-    <!-- Modal content -->
     <div
-      class="relative z-10 mx-4 flex w-full max-w-5xl items-center justify-center"
+      class="relative z-10 flex w-full max-w-5xl items-center justify-center transform-3d"
       transition:scale={{ duration: 150 }}
     >
-      <!-- Prev button -->
-      <button
-        type="button"
-        aria-label="Previous image"
-        class="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 focus:outline-none"
-        on:click={goBackward}
-      >
-        <!-- left chevron -->
-        <div
-          class="w-0 h-0 border-t-[6px] border-t-transparent border-r-8 border-r-white border-b-[6px] border-b-transparent"
-        ></div>
-      </button>
+      <div class="max-w-full opacity-60 transform-gpu rotate-y-[-20deg] angled_photo_right">
+        <PopupPhoto popUp={current.prev_photo!} />
+      </div>
 
-      <!-- Image and caption -->
-      <div class="mx-3 max-w-full">
+      <div class="-m-20 max-w-full transform-gpu">
         <PopupPhoto popUp={current} />
       </div>
 
-      <!-- Next button -->
-      <button
-        type="button"
-        aria-label="Next image"
-        class="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 text-white transition hover:bg-white/25 focus:outline-none"
-        on:click={goForward}
-      >
-        <!-- right chevron -->
-        <div
-          class="w-0 h-0 border-t-[6px] border-t-transparent border-l-8 border-l-white border-b-[6px] border-b-transparent"
-        ></div>
-      </button>
+      <div class="max-w-full opacity-60 transform-gpu -rotate-y-[-20deg] angled_photo_left">
+        <PopupPhoto popUp={current.next_photo!} />
+      </div>
     </div>
   </div>
 {/if}
+
+<style>
+  .angled_photo_right {
+    mask-image: linear-gradient(to right, black 10%, transparent 100%);
+  }
+
+  .angled_photo_left {
+    mask-image: linear-gradient(to left, black 10%, transparent 100%);
+  }
+</style>
+
