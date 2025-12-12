@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import {scale } from "svelte/transition";
+  import { scale, fade } from "svelte/transition";
   import type { PopupPhotoProps } from "../../../../types/about_me/photoProps.js";
   import PopupPhoto from "./PopupPhoto.svelte";
   import { browser } from "$app/environment";
@@ -29,12 +29,12 @@
   }
 
   onMount(() => {
-    if (!browser) return; 
+    if (!browser) return;
     window.addEventListener("keydown", handleKeyDown);
   });
 
   onDestroy(() => {
-    if (!browser) return; 
+    if (!browser) return;
     window.removeEventListener("keydown", handleKeyDown);
   });
 
@@ -62,23 +62,54 @@
     on:touchstart={onTouchStart}
     on:touchend={onTouchEnd}
   >
-    <div class="opacity-25 z-300"></div>
+    <div
+      class="absolute w-screen h-screen inset-0 bg-black/70 backdrop-blur-[7px]"
+      transition:fade
+    ></div>
 
     <div
-      class="relative z-10 flex w-full max-w-5xl items-center justify-center transform-3d"
+      class="relative z-1000 flex w-full max-w-5xl items-center justify-center transform-3d translate-y-1/2 overflow-visible"
       transition:scale={{ duration: 150 }}
     >
-      <div class="max-w-full opacity-60 transform-gpu rotate-y-[-20deg] angled_photo_right">
-        <PopupPhoto popUp={current.prev_photo!} />
-      </div>
 
-      <div class="-m-20 max-w-full transform-gpu">
+      <div
+      class="opacity-60 transform-gpu rotate-y-[-20deg] angled_photo_right -m-20"
+      aria-label="left-photo-wrapper"
+      role="button"
+      tabindex="0"
+      on:click={goBackward}
+      on:keydown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          goBackward();
+        }
+      }}
+    >
+      <PopupPhoto popUp={current.prev_photo!} />
+    </div>
+
+      <div class="max-w-full transform-gpu ">
         <PopupPhoto popUp={current} />
       </div>
 
-      <div class="max-w-full opacity-60 transform-gpu -rotate-y-[-20deg] angled_photo_left">
-        <PopupPhoto popUp={current.next_photo!} />
-      </div>
+
+ 
+      <div
+      class="opacity-60 transform-gpu -rotate-y-[-20deg] angled_photo_left -m-20"
+      aria-label="right-photo-wrapper"
+      role="button"
+      tabindex="0"
+      on:click={goForward}
+      on:keydown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          goForward();
+        }
+      }}
+    >
+      <PopupPhoto popUp={current.next_photo!} />
+    </div>
+
     </div>
   </div>
 {/if}
@@ -92,4 +123,3 @@
     mask-image: linear-gradient(to left, black 10%, transparent 100%);
   }
 </style>
-

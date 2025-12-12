@@ -203,56 +203,60 @@
   });
 </script>
 
-<svg
-  bind:this={svgEl}
-  viewBox={`-${outerRadius * 2} -${outerRadius * 1.5} ${outerRadius * 4} ${outerRadius * 3}`}
-  width="100%"
-  height="auto"
-  role="region"
-  aria-label="Camera roll wheel"
-  on:mouseenter={handleMouseEnter}
-  on:mouseleave={handleMouseLeave}
->
-  <g id="wheel-group">
-    <defs>
-      {#each slices as slice, i}
-        <pattern
-          id={`img${i}`}
-          patternUnits="userSpaceOnUse"
-          width={outerRadius}
-          height={outerRadius}
-        >
-          <image
-            href={slice.src}
-            x={-outerRadius}
-            y={-outerRadius}
-            width={outerRadius * 3}
-            height={outerRadius * 3}
-            preserveAspectRatio="xMidYMid slice"
-            transform={`rotate(${(((slice.startAngle + slice.endAngle) / 2) * 180) / Math.PI + 90})`}
-          />
-        </pattern>
-      {/each}
-    </defs>
-    {#each slices as slice, i}
-      <path
-        d={describeArc(slice.startAngle, slice.endAngle)}
-        fill={`url(#img${i})`}
-        stroke="black"
-        stroke-width="20"
-        role="button"
-        tabindex="0"
-        on:click={() => handleClick(slice)}
-        on:keydown={(e) => e.key === "Enter" && handleClick(slice)}
-        on:mouseenter={() => (hoveredIndex = i)}
-        on:mouseleave={() => (hoveredIndex = null)}
-        transform={getSliceTransform(i, slice.startAngle, slice.endAngle)}
-        style="cursor: pointer; transition: transform 0.3s ease;"
-      />
-    {/each}
-  </g>
-</svg>
+<div>
+  <div class="absolute translate-y-1/2">
+    {#if isVisible && currentPhoto}
+      <PopupSlides current={currentPhoto} {isVisible} on:close={closePopup} />
+    {/if}
+  </div>
 
-{#if isVisible && currentPhoto}
-  <PopupSlides current={currentPhoto} {isVisible} on:close={closePopup} />
-{/if}
+  <svg
+    bind:this={svgEl}
+    viewBox={`-${outerRadius * 2} -${outerRadius * 1.5} ${outerRadius * 4} ${outerRadius * 3}`}
+    width="100%"
+    height="auto"
+    role="region"
+    aria-label="Camera roll wheel"
+    on:mouseenter={handleMouseEnter}
+    on:mouseleave={handleMouseLeave}
+  >
+    <g id="wheel-group">
+      <defs>
+        {#each slices as slice, i}
+          <pattern
+            id={`img${i}`}
+            patternUnits="userSpaceOnUse"
+            width={outerRadius}
+            height={outerRadius}
+          >
+            <image
+              href={slice.src}
+              x={-outerRadius}
+              y={-outerRadius}
+              width={outerRadius * 3}
+              height={outerRadius * 3}
+              preserveAspectRatio="xMidYMid slice"
+              transform={`rotate(${(((slice.startAngle + slice.endAngle) / 2) * 180) / Math.PI + 90})`}
+            />
+          </pattern>
+        {/each}
+      </defs>
+      {#each slices as slice, i}
+        <path
+          d={describeArc(slice.startAngle, slice.endAngle)}
+          fill={`url(#img${i})`}
+          stroke="black"
+          stroke-width="20"
+          role="button"
+          tabindex="0"
+          on:click={() => handleClick(slice)}
+          on:keydown={(e) => e.key === "Enter" && handleClick(slice)}
+          on:mouseenter={() => (hoveredIndex = i)}
+          on:mouseleave={() => (hoveredIndex = null)}
+          transform={getSliceTransform(i, slice.startAngle, slice.endAngle)}
+          style="cursor: pointer; transition: transform 0.3s ease;"
+        />
+      {/each}
+    </g>
+  </svg>
+</div>

@@ -3,6 +3,6 @@
 </script>
 
 
-<div class=" h-screen w-screen flex justify-center align-middle translate-y-30">
+<div class=" h-screen w-screen flex justify-center align-middle ">
     <CameraRoll2></CameraRoll2>
 </div>

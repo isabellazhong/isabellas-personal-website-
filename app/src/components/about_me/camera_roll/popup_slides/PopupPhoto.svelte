@@ -5,12 +5,12 @@
 </script>
 
 <div
-  class="flex flex-col items-center glass_morphism p-5 rounded-3xl w-[60vh] h-[80vh]"
+  class="flex flex-col items-center glass_morphism p-5 mb-4 rounded-3xl w-[40vh] h-[50vh] text-[1vw]"
 >
   <img
     src={popUp.src}
     alt={popUp.desc.header}
-    class="popup_photo w-full h-3/4 object-cover rounded-3xl"
+    class="popup_photo w-full h-2/3 object-cover rounded-3xl"
     loading="lazy"
     draggable="false"
   />
@@ -21,7 +21,7 @@
     <p class="desc opacity-40">
       {popUp.desc.date}
     </p>
-    <p class="desc mt-4 ">
+    <p class="desc mt-1 mb-3">
       {popUp.desc.desc}
     </p>
   {/if}

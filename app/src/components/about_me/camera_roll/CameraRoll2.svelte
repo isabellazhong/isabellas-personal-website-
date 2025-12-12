@@ -366,7 +366,7 @@
   }
 </script>
 
-<div class="w-full h-screen flex items-center justify-center z-0">
+<div class="w-full h-screen flex items-center justify-center z-0 mt-30">
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     bind:this={container}
