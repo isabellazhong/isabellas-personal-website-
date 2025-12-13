@@ -1,8 +1,6 @@
 <script lang="ts">
-  import type { photoProps } from "../../../types/about_me/photoProps.js";
   import { onMount } from "svelte";
   import type { PopupPhotoProps } from "../../../types/about_me/photoProps.js";
-  import PopupPhoto from "./popup_slides/PopupPhoto.svelte";
   import PopupSlides from "./popup_slides/PopupSlides.svelte";
 
   // hover params

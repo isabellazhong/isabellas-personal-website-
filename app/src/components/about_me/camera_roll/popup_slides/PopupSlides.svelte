@@ -72,8 +72,7 @@
       transition:scale={{ duration: 150 }}
     >
 
-      <div
-      class="opacity-60 transform-gpu rotate-y-[-20deg] angled_photo_right -m-20"
+      <div class="relative transform-3d flex -m-20" 
       aria-label="left-photo-wrapper"
       role="button"
       tabindex="0"
@@ -82,20 +81,19 @@
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           goBackward();
-        }
-      }}
-    >
-      <PopupPhoto popUp={current.prev_photo!} />
-    </div>
+        }}}>
 
-      <div class="max-w-full transform-gpu ">
+        <div class="opacity-60 transform-gpu rotate-y-[-20deg] angled_photo_right">
+          <PopupPhoto popUp={current.prev_photo!} />
+        </div>
+
+      </div>
+      <div class="max-w-full transform-gpu">
         <PopupPhoto popUp={current} />
       </div>
-
-
  
       <div
-      class="opacity-60 transform-gpu -rotate-y-[-20deg] angled_photo_left -m-20"
+      class="relative transform-3d flex -m-20" 
       aria-label="right-photo-wrapper"
       role="button"
       tabindex="0"
@@ -107,7 +105,9 @@
         }
       }}
     >
-      <PopupPhoto popUp={current.next_photo!} />
+      <div class="opacity-60 transform-gpu -rotate-y-[-20deg] angled_photo_left">
+        <PopupPhoto popUp={current.next_photo!} />
+      </div>
     </div>
 
     </div>

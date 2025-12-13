@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="flex flex-col items-center glass_morphism p-5 mb-4 rounded-3xl w-[40vh] h-[50vh] text-[1vw]"
+  class="flex flex-col items-center glass_morphism p-5 mb-4 rounded-3xl w-[40vh] h-[50vh]"
 >
   <img
     src={popUp.src}
@@ -15,10 +15,10 @@
     draggable="false"
   />
   {#if popUp.desc}
-    <p class="desc text-[25px] mt-3">
+    <p class="desc text-2xl mt-3 ">
       {popUp.desc.header}
     </p>
-    <p class="desc opacity-40">
+    <p class="desc opacity-40 mb-2">
       {popUp.desc.date}
     </p>
     <p class="desc mt-1 mb-3">
@@ -35,5 +35,7 @@
   .desc {
    align-self: start;
    color: white;
+   font-size: calc(1vh + 0.5vw);
   }
+
 </style>
