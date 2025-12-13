@@ -1,12 +1,9 @@
 @import "tailwindcss";
 
-.glass_morphism {
+.glass-morphism {
     background: rgba(255, 255, 255, 0.1); 
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(30px);
     color: white;
-    border-top: 1px solid #b9b9b972;
-    border-left: 1px solid rgba(135, 135, 135, 0.437);
-    border-bottom: 1px solid rgba(135, 135, 135, 0.233);;
-    border-right: 1px solid #b9b9b942;
+    border: 1px solid rgba(135, 135, 135, 0.437);
     box-shadow: 0 4px 30px rgba(255, 253, 253, 0.1);
 }
