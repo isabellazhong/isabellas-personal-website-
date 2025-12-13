@@ -1,260 +1,405 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import type { PopupPhotoProps } from "../../../types/about_me/photoProps.js";
+  import { onMount, onDestroy } from "svelte";
+  import { browser } from "$app/environment";
+  import AboutMeText from "../text/AboutMeText.svelte";
   import PopupSlides from "./popup_slides/PopupSlides.svelte";
+  import photos from "../../../data/about_me/photos.js";
 
-  // hover params
+  // mouse movement vars
+  let is_dragging = false;
+  let is_hovering = false;
+  let is_momentum_scrolling = false;
+
+  // refs
+  let container: HTMLDivElement; //for the ring container
+  let imageElements: HTMLDivElement[] = [];
+
+  // position vars
+  let start_x: number;
+  let rotation = 0;
+  let velocity = 0;
+  let last_x: number;
+  let last_time: number;
+  let animation_frame: number | null = null;
+
+  let radius = 400;
   let hoveredIndex: number | null = null;
-  const shiftDistance: number = 50;
 
-  // rotation params
-  let rotation: number = 0;
-  let speed: number = 0;
-  const friction: number = 0.8;
-  let frame: number;
-  let isMouseOverWheel: boolean = false;
+  // Performance optimization: Cache calculations
+  let totalImages = photos.length;
+  let angleStep = 360 / totalImages;
+  let fadeStart = -170;
+  let fadeEnd = radius * 0.8;
 
-  // popup params
-  let isVisible: boolean = true;
-  let currentPhoto: PopupPhotoProps | null = null;
+  // popup vars
+  let visible = false;
+  let global_current_photo: PopupPhotoProps;
 
-  const photos: PopupPhotoProps[] = [
-    {
-      src: "/images/friends/climbing.jpg",
-      tag: "friends",
-      desc: "First time rock climbing w/ friends!",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/friends/escape_room.jpg",
-      tag: "friends",
-      desc: "Winning an escape room because we're just like that (we used 2 hints)",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/friends/cottage.JPG",
-      tag: "friends",
-      desc: "Cottage retreat! Very fun :D",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/friends/karaoke.JPG",
-      tag: "friends",
-      desc: "Karaoke night for my birthday :)",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/friends/scaddabush.jpg",
-      tag: "friends",
-      desc: "Very rare hangout with my friends from church",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/food/macarons.jpg",
-      tag: "food",
-      desc: "Finally succeeded making macarons",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/food/mashed_potatoes.jpg",
-      tag: "food",
-      desc: "Somewhat fancier dinner during midterm season",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/food/resevoir_lounge.jpg",
-      tag: "food",
-      desc: "A really yummy and cool meal at the Resevoir Lounge",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/paintings/landscape_painting.jpg",
-      tag: "art",
-      desc: "Made during a painting and bubble tea night event at school!",
-      prev_photo: null,
-      next_photo: null,
-    },
-    {
-      src: "/images/paintings/fish_painting.JPG",
-      tag: "art",
-      desc: "Still hung up on my wall",
-      prev_photo: null,
-      next_photo: null,
-    },
-  ];
+  // Optimized position update function
+  function updateImagePositions() {
+    imageElements.forEach((element, index) => {
+      if (element) {
+        const baseAngle = index * angleStep;
+        const angle = baseAngle + rotation;
+        const radian = (angle * Math.PI) / 180;
+        const x = Math.cos(radian) * radius;
+        const y = Math.sin(radian) * radius;
 
-  const outerRadius: number = 800;
-  const innerRadius: number = 500;
+        let opacity = 1;
+        if (y > fadeStart) {
+          opacity = Math.max(0, 1 - (y - fadeStart) / fadeEnd);
+        }
 
-  let startAngle: number = 0;
+        let scale = 0.7 + 0.3 * opacity;
+        if (hoveredIndex === index) {
+          scale *= 1.15;
+        }
+        const tiltAngle = angle + 90;
+        const zIndex = Math.floor(opacity * 100);
 
-  interface Slice extends PopupPhotoProps {
-    startAngle: number;
-    endAngle: number;
+        // Use transform3d for hardware acceleration
+        element.style.transform = `translate3d(-50%, -50%, 0) translate3d(${x}px, ${y}px, 0) rotate(${tiltAngle}deg) scale(${scale})`;
+        element.style.opacity = opacity.toString();
+        element.style.zIndex = zIndex.toString();
+        element.style.pointerEvents = opacity > 0.1 ? "auto" : "none";
+      }
+    });
+
+    // Clear the animation frame flag
+    animation_frame = null;
   }
 
-  const slices: Slice[] = photos.map((photo) => {
-    const angle = (1 / photos.length) * 2 * Math.PI;
-    const slice = {
-      startAngle,
-      endAngle: startAngle + angle,
-      tag: photo.tag,
-      src: photo.src,
-      desc: photo.desc,
-      next_photo: photo.next_photo,
-      prev_photo: photo.prev_photo,
-    };
-    startAngle += angle;
-    return slice;
-  });
+  function handleMouseDown(e: MouseEvent) {
+    is_dragging = true;
+    is_momentum_scrolling = false;
+    start_x = e.clientX;
+    last_x = e.clientX;
+    last_time = Date.now();
+    velocity = 0;
 
-  function describeArc(start: number, end: number) {
-    const largeArc = end - start <= Math.PI ? 0 : 1;
-    const x1 = Math.cos(start) * outerRadius;
-    const y1 = Math.sin(start) * outerRadius;
-    const x2 = Math.cos(end) * outerRadius;
-    const y2 = Math.sin(end) * outerRadius;
-    const x3 = Math.cos(end) * innerRadius;
-    const y3 = Math.sin(end) * innerRadius;
-    const x4 = Math.cos(start) * innerRadius;
-    const y4 = Math.sin(start) * innerRadius;
-
-    return `
-        M ${x1} ${y1}
-        A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${x2} ${y2}
-        L ${x3} ${y3}
-        A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4}
-        Z
-        `;
-  }
-
-  function handleClick(slice: PopupPhotoProps) {
-    currentPhoto = slice;
-    isVisible = true;
-  }
-
-  function closePopup() {
-    isVisible = false;
-    currentPhoto = null;
-  }
-
-  function getSliceTransform(
-    index: number,
-    startAngle: number,
-    endAngle: number
-  ) {
-    if (hoveredIndex === index) {
-      const midAngle = (startAngle + endAngle) / 2;
-      const translateX = Math.cos(midAngle) * shiftDistance;
-      const translateY = Math.sin(midAngle) * shiftDistance;
-      return `translate(${translateX}, ${translateY})`;
+    // Stop any ongoing momentum animation
+    if (
+      animation_frame !== null &&
+      typeof cancelAnimationFrame !== "undefined"
+    ) {
+      cancelAnimationFrame(animation_frame);
+      animation_frame = null;
     }
-    return "";
+
+    e.preventDefault();
+  }
+
+  function handleTouchStart(e: TouchEvent) {
+    is_dragging = true;
+    is_momentum_scrolling = false;
+    start_x = e.touches[0].clientX;
+    last_x = e.touches[0].clientX;
+    last_time = Date.now();
+    velocity = 0;
+
+    // Stop any ongoing momentum animation
+    if (
+      animation_frame !== null &&
+      typeof cancelAnimationFrame !== "undefined"
+    ) {
+      cancelAnimationFrame(animation_frame);
+      animation_frame = null;
+    }
   }
 
   function handleMouseMove(e: MouseEvent) {
-    if (isMouseOverWheel) {
-      speed += e.movementX * 0.1;
+    if (!is_dragging || !browser) return;
+
+    const current_time = Date.now();
+    const time_delta = current_time - last_time;
+
+    if (time_delta > 0) {
+      const current_x = e.clientX;
+      const delta_x = current_x - last_x;
+
+      // Calculate velocity for momentum
+      velocity = delta_x / time_delta;
+
+      // Apply rotation with smoother multiplier
+      rotation += delta_x * 0.2;
+
+      last_x = current_x;
+      last_time = current_time;
+
+      // Use requestAnimationFrame for smooth updates
+      if (!animation_frame && typeof requestAnimationFrame !== "undefined") {
+        animation_frame = requestAnimationFrame(updateImagePositions);
+      }
     }
   }
 
-  function handleMouseEnter() {
-    isMouseOverWheel = true;
+  function handleTouchMove(e: TouchEvent) {
+    if (!is_dragging || !browser) return;
+
+    e.preventDefault();
+
+    const current_time = Date.now();
+    const time_delta = current_time - last_time;
+
+    if (time_delta > 0) {
+      const current_x = e.touches[0].clientX;
+      const delta_x = current_x - last_x;
+
+      // Calculate velocity for momentum
+      velocity = delta_x / time_delta;
+
+      // Apply rotation with consistent multiplier
+      rotation += delta_x * 0.2;
+
+      last_x = current_x;
+      last_time = current_time;
+
+      // Use requestAnimationFrame for smooth updates
+      if (!animation_frame && typeof requestAnimationFrame !== "undefined") {
+        animation_frame = requestAnimationFrame(updateImagePositions);
+      }
+    }
   }
 
-  function handleMouseLeave() {
-    isMouseOverWheel = false;
+  function handleMouseUp() {
+    if (!is_dragging) return;
+    is_dragging = false;
+
+    // Apply momentum scrolling
+    if (Math.abs(velocity) > 0.05) {
+      applyMomentum();
+    }
   }
 
-  let svgEl: SVGSVGElement | null = null;
-  let groupEl: SVGGElement | null = null;
+  function handleTouchEnd() {
+    if (!is_dragging) return;
+    is_dragging = false;
+
+    // Apply momentum scrolling
+    if (Math.abs(velocity) > 0.05) {
+      applyMomentum();
+    }
+  }
+
+  function applyMomentum() {
+    // Only run in browser environment
+    if (
+      !browser ||
+      typeof requestAnimationFrame === "undefined" ||
+      typeof window === "undefined"
+    ) {
+      return;
+    }
+
+    is_momentum_scrolling = true;
+    const friction = 0.85; // Increased friction for smoother momentum
+    const min_velocity = 0.005; // Lower minimum for smoother stopping
+    let last_animation_time = Date.now();
+
+    function animate() {
+      const current_time = Date.now();
+      const delta_time = current_time - last_animation_time;
+      last_animation_time = current_time;
+
+      if (Math.abs(velocity) < min_velocity) {
+        velocity = 0;
+        is_momentum_scrolling = false;
+        animation_frame = null;
+        return;
+      }
+
+      // Apply rotation based on velocity with better scaling
+      rotation += velocity * 0.3 * delta_time;
+
+      // Apply friction with frame-rate independent calculation
+      velocity *= Math.pow(friction, delta_time / 16);
+
+      // Update positions
+      updateImagePositions();
+
+      animation_frame = requestAnimationFrame(animate);
+    }
+
+    last_animation_time = Date.now();
+    animation_frame = requestAnimationFrame(animate);
+  }
+
+  function handleRingInteraction(e: MouseEvent) {
+    if (!container || imageElements.length === 0) return;
+    const center_x = container.clientWidth / 2;
+    const center_y = container.clientHeight / 2;
+    const mouse_x = e.clientX - container.clientLeft;
+    const mouse_y = e.clientY - container.clientTop;
+
+    const distance = Math.sqrt(
+      (mouse_x - center_x) ** 2 + (mouse_y - center_y) ** 2
+    );
+
+    // Use a representative image element for size calculations
+    const sampleImage = imageElements[0];
+    const imageWidth = sampleImage ? sampleImage.clientWidth : 100;
+
+    const outer_radius = radius + imageWidth;
+    const inner_radius = radius - imageWidth;
+
+    return distance >= inner_radius && distance <= outer_radius;
+  }
+
+  function handlePopupMouseDown(current_photo: PopupPhotoProps) {
+    global_current_photo = current_photo;
+    visible = true;
+  }
+
+  function handlePopupTouch(current_photo: PopupPhotoProps) {
+    global_current_photo = current_photo;
+    visible = true;
+  }
+
+  function handleRingMouseMove(e: MouseEvent) {
+    if (handleRingInteraction(e)) {
+      is_hovering = true;
+    } else {
+      is_hovering = false;
+    }
+
+    if (is_dragging) handleMouseMove(e);
+  }
+
+  function handlePhotoHover(index: number) {
+    hoveredIndex = index;
+    updateImagePositions();
+  }
+
+  function handlePhotoLeave() {
+    hoveredIndex = null;
+    updateImagePositions();
+  }
+
+  // Global event handlers for smooth dragging even when mouse leaves container
+  function handleGlobalMouseMove(e: MouseEvent) {
+    if (is_dragging) handleMouseMove(e);
+  }
+
+  function handleGlobalMouseUp() {
+    handleMouseUp();
+  }
+
+  function handleGlobalTouchMove(e: TouchEvent) {
+    if (is_dragging) handleTouchMove(e);
+  }
+
+  function handleGlobalTouchEnd() {
+    handleTouchEnd();
+  }
 
   onMount(() => {
-    groupEl = svgEl?.querySelector("#wheel-group") as SVGGElement;
+    // Only run in browser environment
+    if (!browser || typeof window === "undefined") return;
 
-    function render() {
-      if (groupEl) groupEl.style.transform = `rotate(${rotation}deg)`;
-      rotation += speed;
-      speed *= friction;
-      frame = requestAnimationFrame(render);
-    }
-
-    if (svgEl) {
-      svgEl.addEventListener("mousemove", handleMouseMove);
-    }
-    frame = requestAnimationFrame(render);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      if (svgEl) {
-        svgEl.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
+    // Add global listeners for smooth dragging
+    window.addEventListener("mousemove", handleGlobalMouseMove);
+    window.addEventListener("mouseup", handleGlobalMouseUp);
+    window.addEventListener("touchmove", handleGlobalTouchMove, {
+      passive: false,
+    });
+    window.addEventListener("touchend", handleGlobalTouchEnd);
   });
+
+  onDestroy(() => {
+    // Only run in browser environment
+    if (!browser || typeof window === "undefined") return;
+
+    // Clean up global listeners
+    window.removeEventListener("mousemove", handleGlobalMouseMove);
+    window.removeEventListener("mouseup", handleGlobalMouseUp);
+    window.removeEventListener("touchmove", handleGlobalTouchMove);
+    window.removeEventListener("touchend", handleGlobalTouchEnd);
+
+    // Clean up animation frame
+    if (
+      animation_frame !== null &&
+      typeof cancelAnimationFrame !== "undefined"
+    ) {
+      cancelAnimationFrame(animation_frame);
+    }
+  });
+
+  function getImageStyle(index: number): string {
+    // For initial positioning only - dynamic updates handled by updateImagePositions
+    const baseAngle = index * angleStep;
+    const angle = baseAngle + rotation;
+    const radian = (angle * Math.PI) / 180;
+    const x = Math.cos(radian) * radius;
+    const y = Math.sin(radian) * radius;
+
+    let opacity = 1;
+    if (y > fadeStart) {
+      opacity = Math.max(0, 1 - (y - fadeStart) / fadeEnd);
+    }
+
+    const scale = 0.7 + 0.3 * opacity;
+    const tiltAngle = angle + 90;
+    const zIndex = Math.floor(opacity * 100);
+    const cursor = is_dragging ? "grabbing" : "grab";
+    const pointerEvents = opacity > 0.1 ? "auto" : "none";
+
+    return `
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate3d(-50%, -50%, 0) translate3d(${x}px, ${y}px, 0) rotate(${tiltAngle}deg) scale(${scale});
+      opacity: ${opacity};
+      width: 6vw;
+      height: 6vw;
+      min-width: 100px;
+      min-height: 100px;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: ${cursor};
+      z-index: ${zIndex};
+      pointer-events: ${pointerEvents};
+      will-change: transform, opacity;
+    `
+      .trim()
+      .replace(/\s+/g, " ");
+  }
 </script>
 
-<div>
-  <div class="absolute translate-y-1/2">
-    {#if isVisible && currentPhoto}
-      <PopupSlides current={currentPhoto} {isVisible} on:close={closePopup} />
-    {/if}
-  </div>
-
-  <svg
-    bind:this={svgEl}
-    viewBox={`-${outerRadius * 2} -${outerRadius * 1.5} ${outerRadius * 4} ${outerRadius * 3}`}
-    width="100%"
-    height="auto"
-    role="region"
-    aria-label="Camera roll wheel"
-    on:mouseenter={handleMouseEnter}
-    on:mouseleave={handleMouseLeave}
+<div class="w-full h-screen flex items-center justify-center z-0 mt-30">
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    bind:this={container}
+    on:mousedown={handleMouseDown}
+    on:mousemove={handleRingMouseMove}
+    on:touchstart={handleTouchStart}
+    on:touchmove={handleTouchMove}
+    class="relative w-full h-full flex items-center justify-center"
+    style:cursor={is_dragging ? "grabbing" : "grab"}
   >
-    <g id="wheel-group">
-      <defs>
-        {#each slices as slice, i}
-          <pattern
-            id={`img${i}`}
-            patternUnits="userSpaceOnUse"
-            width={outerRadius}
-            height={outerRadius}
-          >
-            <image
-              href={slice.src}
-              x={-outerRadius}
-              y={-outerRadius}
-              width={outerRadius * 3}
-              height={outerRadius * 3}
-              preserveAspectRatio="xMidYMid slice"
-              transform={`rotate(${(((slice.startAngle + slice.endAngle) / 2) * 180) / Math.PI + 90})`}
-            />
-          </pattern>
-        {/each}
-      </defs>
-      {#each slices as slice, i}
-        <path
-          d={describeArc(slice.startAngle, slice.endAngle)}
-          fill={`url(#img${i})`}
-          stroke="black"
-          stroke-width="20"
-          role="button"
-          tabindex="0"
-          on:click={() => handleClick(slice)}
-          on:keydown={(e) => e.key === "Enter" && handleClick(slice)}
-          on:mouseenter={() => (hoveredIndex = i)}
-          on:mouseleave={() => (hoveredIndex = null)}
-          transform={getSliceTransform(i, slice.startAngle, slice.endAngle)}
-          style="cursor: pointer; transition: transform 0.3s ease;"
+    {#each photos as photo, index}
+      <div
+        bind:this={imageElements[index]}
+        style={getImageStyle(index)}
+        on:mousedown={() => handlePopupMouseDown(photo)}
+        on:touchstart={() => handlePopupTouch(photo)}
+        on:mouseenter={() => handlePhotoHover(index)}
+        on:mouseleave={handlePhotoLeave}
+      >
+        <img
+          src={photo.src}
+          alt={`Photo ${index + 1}`}
+          class="w-full h-full object-cover"
+          draggable={false}
         />
-      {/each}
-    </g>
-  </svg>
+      </div>
+    {/each}
+  </div>
+  <AboutMeText></AboutMeText>
 </div>
+
+<PopupSlides
+  current={global_current_photo}
+  isVisible={visible}
+  on:close={() => (visible = false)}
+/>

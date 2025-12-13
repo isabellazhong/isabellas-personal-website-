@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="flex flex-col items-center glass_morphism p-5 mb-4 rounded-3xl w-[40vh] h-[50vh]"
+  class="flex flex-col items-center glass-morphism p-5 mb-4 rounded-3xl w-[40vh] h-[50vh]"
 >
   <img
     src={popUp.src}
@@ -15,7 +15,7 @@
     draggable="false"
   />
   {#if popUp.desc}
-    <p class="desc text-2xl mt-3 ">
+    <p class="desc text-2xl mt-3">
       {popUp.desc.header}
     </p>
     <p class="desc opacity-40 mb-2">
@@ -31,11 +31,10 @@
   .popup_photo {
     mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
   }
-  
-  .desc {
-   align-self: start;
-   color: white;
-   font-size: calc(1vh + 0.5vw);
-  }
 
+  .desc {
+    align-self: start;
+    color: white;
+    font-size: calc(1vh + 0.5vw);
+  }
 </style>

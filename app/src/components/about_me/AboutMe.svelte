@@ -1,5 +1,5 @@
 <script lang=ts>
-    import CameraRoll2 from "./camera_roll/CameraRoll2.svelte";
+    import CameraRoll2 from "./camera_roll/CameraRoll.svelte";
 </script>
 
 
