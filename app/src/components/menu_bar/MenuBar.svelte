@@ -7,9 +7,9 @@
   const buttonElements: ButtonProps[] = [
     { target_id: "home_section", button_text: "Home"},
     { target_id: "about_me_section", button_text: "About Me"},
-    { target_id: "projectsButton", button_text: "Projects"},
-    { target_id: "experienceButton", button_text: "Experience"},
-    { target_id: "contactMeButton", button_text: "Contact Me"},
+    { target_id: "projects_section", button_text: "Projects"},
+    { target_id: "experience_section", button_text: "Experience"},
+    { target_id: "contact_me_section", button_text: "Contact Me"},
   ];
 </script>
 
