@@ -6,26 +6,28 @@
   import Projects from "../components/projects/Projects.svelte";
 </script>
 
-<main class="snap-y snap-mandatory overflow-y-scroll h-screen overflow-x-clip">
+<main
+  class="snap-y snap-mandatory overflow-y-scroll h-screen w-screen overflow-x-clip"
+>
   <MenuBar></MenuBar>
   <section
     id="home_section"
-    class="h-screen snap-start fade-in-section"
-    use:fadeIn={{ threshold: 0.5, reset: true }}
+    class="snap-start h-screen fade-in-section"
+    use:fadeIn={{ threshold: 0.2, reset: true }}
   >
     <Home></Home>
   </section>
   <section
     id="about_me_section"
-    class="relative snap-start h-screen fade-in-section translate-y-1/2"
-    use:fadeIn={{ threshold: 0.5, reset: true }}
+    class="snap-start h-screen fade-in-section"
+    use:fadeIn={{ threshold: 0.2, reset: true }}
   >
     <AboutMe></AboutMe>
   </section>
-  <section 
-    id="projects_section" 
-    class="relative snap-start h-screen fade-in-section translate-y-1/2"
-    use:fadeIn={{ threshold: 0.5, reset: true }}
+  <section
+    id="projects_section"
+    class=" snap-start h-screen fade-in-section"
+    use:fadeIn={{ threshold: 0.2, reset: true }}
   >
     <Projects></Projects>
   </section>
@@ -49,8 +51,6 @@
   }
 
   main {
-    display: flex;
     position: relative;
-    flex-direction: column;
   }
 </style>

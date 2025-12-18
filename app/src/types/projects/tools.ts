@@ -6,5 +6,11 @@ export enum Tools {
     LANGCHAIN="LangChain",
     THREEJS="three.js",
     MCP="MCP", 
-    AWS="S3"
+    AWS="S3",
+    SUPABASE="Supabase",
+    VERCEL="Vercel",
+    FLASK="Flask",
+    OAUTH="OAuth",
+    FAISS="Faiss",
+    FASTAPI="FastAPI"
 }
