@@ -33,7 +33,7 @@
  
 </script>
 
-<div class="relative w-[25vw] h-[50vh] justify-center flex-col align-middle p-5"
+<div class="relative w-[25vw] justify-center flex-col align-middle p-5"
     role="button"
     aria-label="project_panel"
     tabindex=0
@@ -51,12 +51,12 @@
     <p class="text-white text-2xl">Media not avaliable</p>
   {/if}
 
-  <div class="relative h-1/2 w-full flex-col m-1">
+  <div class="relative w-full flex-col m-1">
     <div class="flex m-2 gap-4 items-center">
         <p class="header relative text-white">
             <b>{project.header}</b>
         </p>
-        <div class="tag bg-blue-400/35 h-1/2 " class:bg-yellow-200={getProjectType() == "Personal"}>
+        <div class="tag bg-blue-400/35  " class:bg-yellow-200={getProjectType() == "Personal"}>
             {getProjectType()}
         </div>
     </div>
@@ -109,6 +109,6 @@
 
 
   .view-box {
-    background: linear-gradient(to top, rgb(0,0,0,1), rgb(0,0,0,0));
+    background: linear-gradient(to top, rgb(0,0,0,1), rgb(0,0,0,0.5));
   }
 </style>
