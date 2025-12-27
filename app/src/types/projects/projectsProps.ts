@@ -1,8 +1,9 @@
 import type { ProjectTagProps } from "./projectTagProps.js";
 
 export interface ProjectProps {
-    photo: string; 
-    video?: string; 
+    cover_photo: string; 
+    video?: string;
+    photo?: string;
     header:string;
     depost_link?:string;
     github_link:string;

@@ -99,7 +99,7 @@
         }}
       >
         <div
-          class="opacity-60 transform-gpu -rotate-y-[-40deg] angled_photo_right"
+          class="opacity-60 transform-gpu -rotate-y-[-20deg] angled_photo_right"
         >
           <PopupPhoto popUp={current.prev_photo!}/>
         </div>
@@ -122,7 +122,7 @@
         }}
       >
         <div
-          class="opacity-60 transform-gpu rotate-y-[-40deg] angled_photo_left"
+          class="opacity-60 transform-gpu rotate-y-[-20deg] angled_photo_left"
         >
           <PopupPhoto popUp={current.next_photo!}/>
         </div>
