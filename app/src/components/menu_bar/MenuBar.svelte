@@ -14,7 +14,7 @@
 </script>
 
 <nav
-  class="fixed w-4/5 p-5 flex items-center justify-center gap-5 top-0 left-1/2 transform -translate-x-1/2 z-10">
+  class="fixed w-4/5 p-3 flex items-center justify-center gap-5 top-0 left-1/2 transform -translate-x-1/2 z-10 glass-morphism rounded-[50px]">
   {#each buttonElements as button}
     <MenuButton targetElementID={button.target_id} buttonText={button.button_text}></MenuButton>
   {/each}

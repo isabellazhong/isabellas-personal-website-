@@ -13,7 +13,7 @@
 
 <button
   on:click={jumpToPage}
-  class="glass-morphism w-[20vw] h-4/5 border border-white text-white bg-transparent rounded-3xl p-2.5"
+  class="w-[20vw] h-4/5 text-white bg-transparent"
 >
   {buttonText}
 </button>

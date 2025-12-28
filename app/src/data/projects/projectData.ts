@@ -6,6 +6,7 @@ export const projects:ProjectProps[] = [
     {
         header: "marker",
         cover_photo: "project_images/marker_photo.png",
+        photo:"project_images/marker_photo.png",
         short_desc: "test",
         long_desc: "test",
         github_link: "https://github.com/Williamwu277/marker",
