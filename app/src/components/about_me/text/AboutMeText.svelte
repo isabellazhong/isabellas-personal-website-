@@ -3,7 +3,7 @@
 
   export let about_me_desc: string = `
         I'm currently a second year student studying <strong>Computer Science 
-        and Cognitive Science</strong> double major at <strong>UoFT</strong> :) 
+        and Cognitive Science</strong> double major at <strong>UofT</strong> :) 
         <br><br>
         I <strong>love:</strong> 
         

@@ -34,7 +34,7 @@
     >
       <h3><b>{point.header}</b></h3>
     </li>
-    <p class="text-gray-300">{point.desc}</p>
+    <p class="text-gray-300 self-start text-left">{point.desc}</p>
   {/each}
 </ul>
 

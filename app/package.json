@@ -47,5 +47,8 @@
 	},
 	"keywords": [
 		"svelte"
-	]
+	],
+	"dependencies": {
+		"svelte-motion": "^0.11.5"
+	}
 }

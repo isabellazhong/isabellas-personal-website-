@@ -1,0 +1,48 @@
+import { Language } from "../../types/projects/languages.js";
+import type { ProjectProps } from "../../types/projects/projectsProps.js";
+import { Tools } from "../../types/projects/tools.js";
+
+export const projects:ProjectProps[] = [
+    {
+        header: "marker",
+        cover_photo: "project_images/marker_photo.png",
+        photo:"project_images/marker_photo.png",
+        short_desc: "test",
+        long_desc: "test",
+        github_link: "https://github.com/Williamwu277/marker",
+        tags: {lang: [Language.PYTHON, Language.HTML, Language.CSS],
+            tools: [Tools.LANGCHAIN, Tools.NEXT_JS, Tools.FLASK, Tools.FAISS],
+            hackathon: "Hack the 6ix"}
+    },
+    {
+        header: "marker",
+        cover_photo: "project_images/marker_photo.png",
+        short_desc: "test",
+        long_desc: "test",
+        github_link: "https://github.com/Williamwu277/marker",
+        tags: {lang: [Language.PYTHON, Language.HTML, Language.CSS],
+            tools: [Tools.LANGCHAIN, Tools.NEXT_JS, Tools.FLASK, Tools.FAISS],
+            hackathon: "Hack the 6ix"}
+    },
+    {
+        header: "marker",
+        cover_photo: "project_images/marker_photo.png",
+        short_desc: "test",
+        long_desc: "test",
+        github_link: "https://github.com/Williamwu277/marker",
+        tags: {lang: [Language.PYTHON, Language.HTML, Language.CSS],
+            tools: [Tools.LANGCHAIN, Tools.NEXT_JS, Tools.FLASK, Tools.FAISS],
+            hackathon: "Hack the 6ix"}
+    },
+    {
+        header: "marker",
+        cover_photo: "project_images/marker_photo.png",
+        short_desc: "test",
+        long_desc: "test",
+        github_link: "https://github.com/Williamwu277/marker",
+        tags: {lang: [Language.PYTHON, Language.HTML, Language.CSS],
+            tools: [Tools.LANGCHAIN, Tools.NEXT_JS, Tools.FLASK, Tools.FAISS],
+            hackathon: "Hack the 6ix"}
+    },
+    
+]

@@ -166,7 +166,6 @@
     if (!is_dragging) return;
     is_dragging = false;
 
-    // Apply momentum scrolling
     if (Math.abs(velocity) > 0.05) {
       applyMomentum();
     }
@@ -176,14 +175,12 @@
     if (!is_dragging) return;
     is_dragging = false;
 
-    // Apply momentum scrolling
     if (Math.abs(velocity) > 0.05) {
       applyMomentum();
     }
   }
 
   function applyMomentum() {
-    // Only run in browser environment
     if (
       !browser ||
       typeof requestAnimationFrame === "undefined" ||
@@ -209,13 +206,10 @@
         return;
       }
 
-      // Apply rotation based on velocity with better scaling
       rotation += velocity * 0.3 * delta_time;
 
-      // Apply friction with frame-rate independent calculation
       velocity *= Math.pow(friction, delta_time / 16);
 
-      // Update positions
       updateImagePositions();
 
       animation_frame = requestAnimationFrame(animate);
@@ -236,7 +230,6 @@
       (mouse_x - center_x) ** 2 + (mouse_y - center_y) ** 2
     );
 
-    // Use a representative image element for size calculations
     const sampleImage = imageElements[0];
     const imageWidth = sampleImage ? sampleImage.clientWidth : 100;
 

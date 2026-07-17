@@ -2,7 +2,7 @@ import type { PopupPhotoProps } from "../../types/about_me/photoProps.js";
 
 let photos: PopupPhotoProps[] = [
     {
-      src: "/images/friends/climbing.jpg",
+      src: "/about_me_images/friends/climbing.jpg",
       tag: "friends",
       desc: {
         header: "ROCK CLIMBING",
@@ -13,7 +13,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/friends/escape_room.jpg",
+      src: "/about_me_images/friends/escape_room.jpg",
       tag: "friends",
       desc: {
         header: "ESCAPE ROOM",
@@ -24,7 +24,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/friends/cottage.JPG",
+      src: "/about_me_images/friends/cottage.JPG",
       tag: "friends",
       desc: {
         header: "COTTAGE RETREAT",
@@ -35,7 +35,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/friends/karaoke.JPG",
+      src: "/about_me_images/friends/karaoke.JPG",
       tag: "friends",
       desc: {
         header: "KARAOKE NIGHT",
@@ -46,7 +46,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/friends/scaddabush.jpg",
+      src: "/about_me_images/friends/scaddabush.jpg",
       tag: "friends",
       desc: {
         header: "CHURCH FRIENDS",
@@ -57,7 +57,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/food/macarons.jpg",
+      src: "/about_me_images/food/macarons.jpg",
       tag: "food",
       desc: {
         header: "MACARONS",
@@ -68,7 +68,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/food/mashed_potatoes.jpg",
+      src: "/about_me_images/food/mashed_potatoes.jpg",
       tag: "food",
       desc: {
         header: "MASHED POTATOES",
@@ -79,7 +79,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/food/resevoir_lounge.jpg",
+      src: "/about_me_images/food/resevoir_lounge.jpg",
       tag: "food",
       desc: {
         header: "RESEVOIR LOUNGE",
@@ -90,7 +90,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/paintings/landscape_painting.jpg",
+      src: "/about_me_images/paintings/landscape_painting.jpg",
       tag: "art",
       desc: {
         header: "LANDSCAPE PAINTING",
@@ -101,7 +101,7 @@ let photos: PopupPhotoProps[] = [
       next_photo: null,
     },
     {
-      src: "/images/paintings/fish_painting.JPG",
+      src: "/about_me_images/paintings/fish_painting.JPG",
       tag: "art",
       desc: {
         header: "KOI FISH PAINTING",

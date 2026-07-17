@@ -5,7 +5,7 @@
 </script>
 
 <div
-  class="flex flex-col items-center glass-morphism p-5 mb-4 rounded-3xl w-[40vh] h-[50vh]"
+  class="flex flex-col items-center glass-morphism p-5 mb-4 rounded-3xl w-[22vw] h-[50vh]"
 >
   <img
     src={popUp.src}
